@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">cropaid</string>
+    <string name="title_activity_main">cropaid</string>
+    <string name="package_name">com.cropaid.com</string>
+    <string name="custom_url_scheme">com.cropaid.com</string>
+</resources>
