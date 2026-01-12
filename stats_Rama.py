@@ -1498,13 +1498,3 @@
 # Line 1497
 # Line 1498
 # Line 1499
-# Line 1500
-# Line 1501
-# Line 1502
-# Line 1503
-# Line 1504
-# Line 1505
-# Line 1506
-# Line 1507
-# Line 1508
-# Line 1509
