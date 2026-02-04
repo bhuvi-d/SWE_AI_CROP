@@ -4,3 +4,4 @@
 # Fix navigation bug - 11750
 # Format code - 21624
 # Refactor CSS styles - 64392
+# Fix typo in readme - 86169
