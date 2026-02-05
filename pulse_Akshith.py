@@ -12,3 +12,4 @@
 # Format code - 56372
 # Format code - 34500
 # Debug connection issue - 99819
+# Fix typo in readme - 41026
