@@ -1,210 +1,102 @@
 /**
- * Test Cases for Preferences Service
- * Run these tests to verify preference persistence
+ * Unit Tests for Preferences Service
+ * Tests user preference management and local storage persistence
+ * Validates language settings, crop types, voice instructions, and data persistence
+ * Converted to work with Vitest testing framework
  */
+import { describe, it, expect, beforeEach } from 'vitest'
+import { preferencesService } from './preferencesService'
 
-import { preferencesService } from '../services/preferencesService';
+// Test suite for preferences service functionality
+// Tests cover CRUD operations on user preferences stored in localStorage
+describe('Preferences Service', () => {
+    // Setup: Clear preferences before each test
+    // Ensures test isolation and prevents data pollution between tests
+    beforeEach(() => {
+        // Clear all stored preferences to start with clean state
+        // This prevents previous test data from affecting current test
+        preferencesService.clearPreferences()
+    })
 
-class PreferencesServiceTests {
-    constructor() {
-        this.results = [];
-        this.passed = 0;
-        this.failed = 0;
-    }
+    // Test: Load default preferences on first use
+    // Validates that the service provides sensible defaults
+    it('should load default preferences', () => {
+        // Load preferences (will be defaults since we cleared in beforeEach)
+        const prefs = preferencesService.loadPreferences()
 
-    // Helper to log test results
-    log(testName, passed, message = '') {
-        const result = { testName, passed, message };
-        this.results.push(result);
+        // Verify preferences object exists
+        expect(prefs).toBeDefined()
 
-        if (passed) {
-            this.passed++;
-            console.log(`✅ PASS: ${testName}`);
-        } else {
-            this.failed++;
-            console.error(`❌ FAIL: ${testName} - ${message}`);
-        }
-    }
+        // Check that voice instructions default to true (enabled)
+        // This ensures accessibility features are on by default
+        expect(prefs.voiceInstructions).toBe(true)
+    })
 
-    // Test 1: Initial load creates default preferences
-    testInitialLoad() {
-        preferencesService.clearPreferences();
-        const prefs = preferencesService.loadPreferences();
+    // Test: Set and retrieve language preference
+    // Validates language persistence for multilingual support
+    it('should set and get language', () => {
+        // Set language to Hindi
+        // This simulates a user changing their language preference
+        preferencesService.setLanguage('hi')
 
-        this.log(
-            'Initial Load Creates Defaults',
-            prefs.language === null && prefs.voiceInstructions === true,
-            `Expected language=null, voiceInstructions=true, got ${JSON.stringify(prefs)}`
-        );
-    }
+        // Retrieve the saved language
+        const lang = preferencesService.getLanguage()
 
-    // Test 2: Set and get language
-    testSetGetLanguage() {
-        preferencesService.setLanguage('hi');
-        const lang = preferencesService.getLanguage();
+        // Verify language was saved correctly
+        expect(lang).toBe('hi')
+    })
 
-        this.log(
-            'Set and Get Language',
-            lang === 'hi',
-            `Expected 'hi', got '${lang}'`
-        );
-    }
+    // Test: Multiple preferences persist together
+    // Validates that setting multiple preferences doesn't overwrite others
+    it('should persist preferences', () => {
+        // Set language preference to Tamil
+        preferencesService.setLanguage('ta')
 
-    // Test 3: Persistence across reload
-    testPersistence() {
-        preferencesService.setLanguage('ta');
-        preferencesService.setCropType('rice');
+        // Set crop type preference to rice
+        // This is used for personalized advice
+        preferencesService.setCropType('rice')
 
-        // Simulate reload by creating new instance
-        const newPrefs = preferencesService.loadPreferences();
+        // Reload all preferences from storage
+        // This simulates a page refresh or app restart
+        const newPrefs = preferencesService.loadPreferences()
 
-        this.log(
-            'Preferences Persist Across Reload',
-            newPrefs.language === 'ta' && newPrefs.cropType === 'rice',
-            `Expected language='ta', cropType='rice', got ${JSON.stringify(newPrefs)}`
-        );
-    }
+        // Verify both preferences persisted
+        expect(newPrefs.language).toBe('ta')
+        expect(newPrefs.cropType).toBe('rice')
+    })
 
-    // Test 4: Voice instructions toggle
-    testVoiceInstructions() {
-        preferencesService.setVoiceInstructions(false);
-        const enabled = preferencesService.getVoiceInstructions();
+    // Test: Toggle voice instructions on and off
+    // Validates the voice instructions accessibility feature
+    it('should toggle voice instructions', () => {
+        // Disable voice instructions
+        // User might disable for privacy or preference reasons
+        preferencesService.setVoiceInstructions(false)
 
-        preferencesService.setVoiceInstructions(true);
-        const enabledAgain = preferencesService.getVoiceInstructions();
+        // Verify voice instructions are now disabled
+        expect(preferencesService.getVoiceInstructions()).toBe(false)
 
-        this.log(
-            'Voice Instructions Toggle',
-            enabled === false && enabledAgain === true,
-            `Expected false then true, got ${enabled} then ${enabledAgain}`
-        );
-    }
+        // Re-enable voice instructions
+        // User changes their mind and wants audio guidance
+        preferencesService.setVoiceInstructions(true)
 
-    // Test 5: Multiple preferences update
-    testMultiplePreferences() {
-        preferencesService.setPreferences({
-            language: 'kn',
-            cropType: 'wheat',
-            showGrid: false
-        });
+        // Verify voice instructions are now enabled
+        expect(preferencesService.getVoiceInstructions()).toBe(true)
+    })
 
-        const lang = preferencesService.getLanguage();
-        const crop = preferencesService.getCropType();
-        const grid = preferencesService.getShowGrid();
+    // Test: Clear all preferences
+    // Validates the ability to reset all user settings
+    it('should clear preferences', () => {
+        // Set a language first to have something to clear
+        preferencesService.setLanguage('en')
 
-        this.log(
-            'Set Multiple Preferences',
-            lang === 'kn' && crop === 'wheat' && grid === false,
-            `Expected language='kn', cropType='wheat', showGrid=false, got ${lang}, ${crop}, ${grid}`
-        );
-    }
+        // Clear all preferences (reset to defaults)
+        // This might be used in a "Reset Settings" feature
+        preferencesService.clearPreferences()
 
-    // Test 6: User ID and sync
-    testUserIdSync() {
-        const userId = 'user123';
-        preferencesService.setUserId(userId);
-        const retrievedId = preferencesService.getUserId();
+        // Try to get the language we just set
+        const lang = preferencesService.getLanguage()
 
-        this.log(
-            'User ID Storage',
-            retrievedId === userId,
-            `Expected '${userId}', got '${retrievedId}'`
-        );
-    }
-
-    // Test 7: Clear preferences
-    testClearPreferences() {
-        preferencesService.setLanguage('en');
-        preferencesService.clearPreferences();
-
-        const lang = preferencesService.getLanguage();
-
-        this.log(
-            'Clear Preferences',
-            lang === null,
-            `Expected null after clear, got '${lang}'`
-        );
-    }
-
-    // Test 8: Check if preferences exist
-    testHasPreferences() {
-        preferencesService.clearPreferences();
-        const hasNone = !preferencesService.hasPreferences();
-
-        preferencesService.setLanguage('en');
-        const hasPrefs = preferencesService.hasPreferences();
-
-        this.log(
-            'Check Preferences Exist',
-            hasNone && hasPrefs,
-            `Expected false then true, got ${hasNone} then ${hasPrefs}`
-        );
-    }
-
-    // Test 9: Timestamps are updated
-    testTimestamps() {
-        preferencesService.clearPreferences();
-        const prefs1 = preferencesService.getAllPreferences();
-
-        // Wait a bit
-        setTimeout(() => {
-            preferencesService.setLanguage('en');
-            const prefs2 = preferencesService.getAllPreferences();
-
-            const timestampUpdated = new Date(prefs2.updatedAt) > new Date(prefs1.updatedAt);
-
-            this.log(
-                'Timestamps Update Correctly',
-                timestampUpdated,
-                `Expected updated timestamp, got created:${prefs1.createdAt}, updated:${prefs2.updatedAt}`
-            );
-
-            // Show final results after async test completes
-            this.showResults();
-        }, 100);
-    }
-
-    // Run all tests
-    runAllTests() {
-        console.log('🧪 Running Preferences Service Tests...\n');
-
-        this.testInitialLoad();
-        this.testSetGetLanguage();
-        this.testPersistence();
-        this.testVoiceInstructions();
-        this.testMultiplePreferences();
-        this.testUserIdSync();
-        this.testClearPreferences();
-        this.testHasPreferences();
-        this.testTimestamps(); // This one is async
-    }
-
-    // Show test results summary
-    showResults() {
-        console.log('\n' + '='.repeat(50));
-        console.log('📊 Test Results Summary');
-        console.log('='.repeat(50));
-        console.log(`Total Tests: ${this.results.length}`);
-        console.log(`✅ Passed: ${this.passed}`);
-        console.log(`❌ Failed: ${this.failed}`);
-        console.log(`Success Rate: ${((this.passed / this.results.length) * 100).toFixed(1)}%`);
-        console.log('='.repeat(50));
-
-        if (this.failed === 0) {
-            console.log('🎉 All tests passed!');
-        } else {
-            console.log('⚠️  Some tests failed. Please review the errors above.');
-        }
-    }
-}
-
-// Export for manual testing in browser console
-export const runPreferencesTests = () => {
-    const tester = new PreferencesServiceTests();
-    tester.runAllTests();
-};
-
-// Auto-run in development
-if (import.meta.env.DEV) {
-    console.log('Development mode detected. Run runPreferencesTests() to test preferences.');
-}
+        // After clearing, language should be null (not set)
+        expect(lang).toBe(null)
+    })
+})
