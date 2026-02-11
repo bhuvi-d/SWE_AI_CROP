@@ -38,7 +38,7 @@ This project aims to build an intelligent agriculture support system that can:
 * React (Vite)
 * Tailwind CSS
 * Context API
-* Capacitor (Android)
+* Flutter Mobile App
 * i18n translations
 
 ### AI / ML
@@ -56,7 +56,6 @@ This project aims to build an intelligent agriculture support system that can:
 ### Deployment
 
 * Vercel (Web)
-* Capacitor Android build
 
 ---
 
