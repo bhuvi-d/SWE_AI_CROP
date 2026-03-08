@@ -87,10 +87,13 @@ const CalendarScreen = ({ onBack }) => {
         <div className="min-h-screen bg-gray-50 flex flex-col">
             {/* Header */}
             <div className="bg-white p-4 shadow-sm flex items-center gap-4 sticky top-0 z-10">
-                <button onClick={onBack} className="p-2 rounded-full hover:bg-gray-100">
-                    <ArrowRight className="w-6 h-6 rotate-180" />
+                <button
+                    onClick={onBack}
+                    className="p-2.5 bg-white rounded-full text-gray-600 hover:bg-gray-100 transition active:scale-95 shadow-md"
+                >
+                    <ArrowRight className="w-5 h-5 rotate-180" />
                 </button>
-                <h1 className="text-xl font-bold flex-1">{t('calendar.title')}</h1>
+                <h1 className="text-xl font-bold flex-1 text-gray-800">{t('calendar.title')}</h1>
                 <button
                     onClick={() => setShowNewTask(true)}
                     className="bg-blue-600 text-white px-4 py-2 rounded-lg font-medium shadow-sm hover:bg-blue-700"
