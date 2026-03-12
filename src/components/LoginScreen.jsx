@@ -239,7 +239,7 @@ function LoginScreen({ onLogin, onSkip }) {
 
         const msg = t('loginScreen.loginSuccess');
         if (voiceEnabled) speak(msg, getVoiceLang());
-        audioService.playSuccess();
+        audioService.playSoftAlert();
 
         // Migrate guest data to this new auth session if previously in guest mode
         if (consentService.isGuest()) {

@@ -53,6 +53,9 @@ function MainAppFlow() {
 
   const handleGuestEntry = () => {
     consentService.setGuestMode(true);
+    const guestId = '1aa73030589c2135f668eacb';
+    setUserId(guestId);
+    preferencesService.setUserId(guestId);
     setView("consent");
   };
 
@@ -73,6 +76,9 @@ function MainAppFlow() {
     } else {
       // If user skips login, treat as guest (US6)
       consentService.setGuestMode(true);
+      const guestId = '1aa73030589c2135f668eacb';
+      setUserId(guestId);
+      preferencesService.setUserId(guestId);
     }
 
     // After login, show consent if not already given

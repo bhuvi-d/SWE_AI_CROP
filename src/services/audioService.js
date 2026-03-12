@@ -251,6 +251,19 @@ class AudioService {
     }
 
     /**
+     * Play soft alert sound from assets
+     */
+    playSoftAlert() {
+        if (!this.soundEnabled) return;
+        try {
+            const audio = new Audio('/sounds/soft_alert.mp3');
+            audio.play().catch(e => console.warn('Failed to play soft_alert.mp3:', e));
+        } catch (e) {
+            console.warn('Error playing soft alert:', e);
+        }
+    }
+
+    /**
      * Play notification sound
      */
     playNotification() {

@@ -23,11 +23,13 @@ class PreferencesService {
             const stored = localStorage.getItem(PREFERENCES_KEY);
             if (stored) {
                 const parsed = JSON.parse(stored);
-                // Ensure a userId exists (guest or real) - must be 24 char hex for MongoDB
                 let userId = parsed.userId;
                 let needsUpdate = false;
-                if (!userId || userId.startsWith('guest_')) {
-                    userId = Array.from({ length: 24 }, () => Math.floor(Math.random() * 16).toString(16)).join('');
+
+                // Ensure a userId exists (guest or real) - must be 24 char hex for MongoDB
+                const isGuest = localStorage.getItem('crop_diagnosis_is_guest') === 'true';
+                if (!userId || isGuest || userId.startsWith('guest_')) {
+                    userId = '1aa73030589c2135f668eacb'; // Stable local ID for all guests
                     needsUpdate = true;
                 }
 
@@ -63,7 +65,7 @@ class PreferencesService {
             cropType: null,
             voiceInstructions: true,
             showGrid: true,
-            userId: Array.from({ length: 24 }, () => Math.floor(Math.random() * 16).toString(16)).join(''),
+            userId: '1aa73030589c2135f668eacb', // Stable local ID
             lastSyncedAt: null,
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString()

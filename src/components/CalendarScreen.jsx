@@ -172,7 +172,7 @@ const CalendarScreen = ({ onBack }) => {
                 isRecurring: false, recurrencePattern: 'none', recurrenceEndDate: '', description: ''
             });
             loadTasks();
-            audioService.playSuccess();
+            audioService.playSoftAlert();
         } catch (error) {
             console.error('Failed to create task', error);
             audioService.playError();
@@ -208,7 +208,7 @@ const CalendarScreen = ({ onBack }) => {
                 isRecurring: false, recurrencePattern: 'none', recurrenceEndDate: '', customRecurrenceDays: []
             });
             loadReminders();
-            audioService.playSuccess();
+            audioService.playSoftAlert();
         } catch (error) {
             console.error('Failed to create reminder', error);
             audioService.playError();

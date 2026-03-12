@@ -185,6 +185,15 @@ export const api = {
                 return offlineSync.getCachedData('community_posts') || [];
             }
         },
+        getHotWords: async () => {
+            try {
+                const res = await fetchWithAuth(`${API_URL}/community/hot-words`);
+                return await res.json();
+            } catch (e) {
+                console.error("Failed to fetch hot words", e);
+                return [];
+            }
+        },
         createPost: async (postData) => {
             if (!navigator.onLine) {
                 return offlineSync.queueAction('CREATE_POST', postData);
@@ -219,8 +228,7 @@ export const api = {
     },
     calendar: {
         getTasks: async (userId) => {
-            const isGuest = localStorage.getItem('crop_diagnosis_is_guest') === 'true';
-            if (!navigator.onLine || isGuest) {
+            if (!navigator.onLine) {
                 const cached = offlineSync.getCachedData(`calendar_tasks_${userId}`);
                 return cached || [];
             }
@@ -234,8 +242,7 @@ export const api = {
             }
         },
         createTask: async (taskData) => {
-            const isGuest = localStorage.getItem('crop_diagnosis_is_guest') === 'true';
-            if (!navigator.onLine || isGuest) {
+            if (!navigator.onLine) {
                 return offlineSync.queueAction('CREATE_TASK', taskData);
             }
             const res = await fetchWithAuth(`${API_URL}/calendar`, {
@@ -246,8 +253,7 @@ export const api = {
             return res.json();
         },
         toggleTask: async (taskId, userId) => {
-            const isGuest = localStorage.getItem('crop_diagnosis_is_guest') === 'true';
-            if (!navigator.onLine || isGuest) {
+            if (!navigator.onLine) {
                 return offlineSync.queueAction('TOGGLE_TASK', { taskId, userId });
             }
             const res = await fetchWithAuth(`${API_URL}/calendar/${taskId}/toggle`, {
@@ -256,8 +262,7 @@ export const api = {
             return res.json();
         },
         deleteTask: async (taskId, userId) => {
-            const isGuest = localStorage.getItem('crop_diagnosis_is_guest') === 'true';
-            if (!navigator.onLine || isGuest) {
+            if (!navigator.onLine) {
                 return offlineSync.queueAction('DELETE_TASK', { taskId, userId });
             }
             const res = await fetchWithAuth(`${API_URL}/calendar/${taskId}`, {

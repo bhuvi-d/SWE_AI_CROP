@@ -21,7 +21,8 @@ export const offlineSync = {
         // Optimistically update the cache for Calendar tasks (US27)
         if (type.endsWith('_TASK') && data.userId) {
             const cacheKey = `calendar_tasks_${data.userId}`;
-            let cachedTasks = offlineSync.getCachedData(cacheKey) || [];
+            let cachedTasks = offlineSync.getCachedData(cacheKey);
+            if (!Array.isArray(cachedTasks)) cachedTasks = [];
 
             if (type === 'CREATE_TASK') {
                 const newTask = {
